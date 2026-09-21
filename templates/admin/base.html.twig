@@ -1,0 +1,74 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{% block admin_title %}Dashboard{% endblock %} · Admin{% endblock %}
+
+{% block body %}
+    <header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
+        <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6" href="{{ path('app_admin_dashboard') }}">Greenpro Admin</a>
+        <button class="navbar-toggler d-md-none collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Afficher/masquer la navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="navbar-nav ms-auto">
+            {% if app.user %}
+                <div class="nav-item text-nowrap d-flex align-items-center">
+                    <span class="nav-link px-3 text-light">{{ app.user.userIdentifier }}</span>
+                    <a class="nav-link px-3" href="{{ path('app_logout') }}">Déconnexion</a>
+                </div>
+            {% endif %}
+        </div>
+    </header>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-3 col-lg-2 d-md-block collapse sidebar admin-sidebar" id="sidebarMenu">
+                <div class="admin-sidebar-sticky pt-3">
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link{% if app.request.attributes.get('_route') == 'app_admin_dashboard' %} active{% endif %}" href="{{ path('app_admin_dashboard') }}">
+                                <i class="bi bi-speedometer2 me-2"></i>
+                                Tableau de bord
+                            </a>
+                        </li>
+                        {% if is_granted('ROLE_MANAGER') %}
+                            <li class="nav-item">
+                                <a class="nav-link{% if app.request.attributes.get('_route') starts with 'app_admin_customer_' %} active{% endif %}" href="{{ path('app_admin_customer_index') }}">
+                                    <i class="bi bi-people me-2"></i>
+                                    Clients
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link{% if app.request.attributes.get('_route') starts with 'app_admin_material_' %} active{% endif %}" href="{{ path('app_admin_material_index') }}">
+                                    <i class="bi bi-tools me-2"></i>
+                                    Matériels
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link{% if app.request.attributes.get('_route') starts with 'app_admin_location_' %} active{% endif %}" href="{{ path('app_admin_location_index') }}">
+                                    <i class="bi bi-calendar3 me-2"></i>
+                                    Locations
+                                </a>
+                            </li>
+                        {% endif %}
+                        {% if is_granted('ROLE_ADMIN') %}
+                            <li class="nav-item">
+                                <a class="nav-link{% if app.request.attributes.get('_route') starts with 'app_admin_user_' %} active{% endif %}" href="{{ path('app_admin_user_index') }}">
+                                    <i class="bi bi-person-badge me-2"></i>
+                                    Utilisateurs
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
+                {% for label, messages in app.flashes %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ label }}">{{ message }}</div>
+                    {% endfor %}
+                {% endfor %}
+                {% block admin_body %}{% endblock %}
+            </main>
+        </div>
+    </div>
+{% endblock %}

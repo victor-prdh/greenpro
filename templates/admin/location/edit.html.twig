@@ -1,0 +1,11 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block admin_title %}Modifier la location{% endblock %}
+
+{% block admin_body %}
+    <h1 class="h3 pb-2 mb-4 border-bottom">Modifier la location</h1>
+
+    {{ form(form) }}
+
+    <a class="btn btn-outline-secondary" href="{{ path('app_admin_location_index') }}">Annuler</a>
+{% endblock %}

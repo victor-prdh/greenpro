@@ -1,0 +1,69 @@
+body {
+    font-size: .875rem;
+    background-color: #f5f7fa;
+}
+
+/*
+ * Sidebar
+ */
+
+.admin-sidebar {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 100;
+    padding: 48px 0 0;
+    box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
+}
+
+@media (max-width: 767.98px) {
+    .admin-sidebar {
+        top: 5rem;
+    }
+}
+
+.admin-sidebar-sticky {
+    position: relative;
+    top: 0;
+    height: calc(100vh - 48px);
+    padding-top: .5rem;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.admin-sidebar .nav-link {
+    font-weight: 500;
+    color: #333;
+}
+
+.admin-sidebar .nav-link i {
+    margin-right: 4px;
+    color: #727272;
+}
+
+.admin-sidebar .nav-link.active {
+    color: #2470dc;
+}
+
+.admin-sidebar .nav-link:hover i,
+.admin-sidebar .nav-link.active i {
+    color: inherit;
+}
+
+/*
+ * Navbar
+ */
+
+.navbar-brand {
+    padding-top: .75rem;
+    padding-bottom: .75rem;
+    font-size: 1rem;
+    background-color: rgba(0, 0, 0, .25);
+    box-shadow: inset -1px 0 0 rgba(0, 0, 0, .25);
+}
+
+.navbar .navbar-toggler {
+    top: .25rem;
+    right: 1rem;
+}

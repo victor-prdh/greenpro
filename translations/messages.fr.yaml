@@ -1,0 +1,12 @@
+enum:
+    location_status:
+        draft: Brouillon
+        confirmed: Confirmée
+        in_progress: En cours
+        finished: Terminée
+        cancelled: Annulée
+    material_status:
+        available: Disponible
+        rented: Loué
+        maintenance: En maintenance
+        retired: Retiré

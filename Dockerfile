@@ -17,6 +17,7 @@ RUN set -eux; \
 	install-php-extensions \
 		@composer \
 		apcu \
+		bcmath \
 		intl \
 		opcache \
 		zip \
@@ -26,3 +27,5 @@ RUN set -eux; \
 COPY --from=composer/composer:latest-bin /composer /usr/bin/composer
 
 COPY ./ /app
+
+RUN composer install --no-interaction --optimize-autoloader

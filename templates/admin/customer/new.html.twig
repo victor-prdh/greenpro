@@ -1,0 +1,11 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block admin_title %}Nouveau client{% endblock %}
+
+{% block admin_body %}
+    <h1 class="h3 pb-2 mb-4 border-bottom">Nouveau client</h1>
+
+    {{ form(form) }}
+
+    <a class="btn btn-outline-secondary" href="{{ path('app_admin_customer_index') }}">Annuler</a>
+{% endblock %}

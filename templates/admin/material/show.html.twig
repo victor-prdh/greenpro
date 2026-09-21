@@ -1,0 +1,64 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block admin_title %}{{ material.name }}{% endblock %}
+
+{% block admin_body %}
+    <div class="d-flex justify-content-between align-items-center pb-2 mb-4 border-bottom">
+        <h1 class="h3 mb-0">{{ material.name }}</h1>
+        <a class="btn btn-outline-secondary" href="{{ path('app_admin_material_index') }}">Retour</a>
+    </div>
+
+    <dl class="row">
+        <dt class="col-sm-3">Référence</dt>
+        <dd class="col-sm-9">{{ material.reference }}</dd>
+
+        <dt class="col-sm-3">Prix journalier</dt>
+        <dd class="col-sm-9">{{ material.dailyPrice|number_format(2, ',', ' ') }} €</dd>
+
+        <dt class="col-sm-3">Statut</dt>
+        <dd class="col-sm-9">{{ status_badge(material.status) }}</dd>
+    </dl>
+
+    <a class="btn btn-primary" href="{{ path('app_admin_material_edit', {uuid: material.uuid}) }}">Modifier</a>
+
+    <h2 class="h5 mt-4 pb-2 mb-3 border-bottom">Locations associées</h2>
+
+    <table class="table table-striped align-middle">
+        <thead>
+            <tr>
+                <th>Client</th>
+                <th>Début</th>
+                <th>Fin</th>
+                <th>Statut</th>
+                <th class="text-end">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% set now = "now"|date('U') %}
+            {% for location in locations %}
+                <tr>
+                    <td>{{ location.customer ? location.customer.companyName : '' }}</td>
+                    <td>{{ location.startAt|date('d/m/Y') }}</td>
+                    <td>{{ location.endAt|date('d/m/Y') }}</td>
+                    <td>
+                        {{ status_badge(location.status) }}
+                        {% if location.endAt|date('U') < now %}
+                            <span class="badge bg-secondary">Passée</span>
+                        {% elseif location.startAt|date('U') <= now and location.endAt|date('U') >= now %}
+                            <span class="badge bg-success">En cours</span>
+                        {% else %}
+                            <span class="badge bg-info text-dark">À venir</span>
+                        {% endif %}
+                    </td>
+                    <td class="text-end">
+                        <a class="btn btn-sm btn-outline-secondary" href="{{ path('app_admin_location_show', {uuid: location.uuid}) }}">Voir</a>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="5" class="text-muted">Aucune location associée.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

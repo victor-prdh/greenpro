@@ -1,0 +1,23 @@
+<table class="table table-striped align-middle">
+    <thead>
+        <tr>
+            {% for column in columns %}
+                <th>{{ column.label }}</th>
+            {% endfor %}
+        </tr>
+    </thead>
+    <tbody>
+        {% for row in pagination %}
+            <tr>
+                {% for column in columns %}
+                    <td>{{ attribute(row, column.field) }}</td>
+                {% endfor %}
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="{{ columns|length }}" class="text-muted">Aucun résultat.</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{{ include('pagination/_nav.html.twig') }}

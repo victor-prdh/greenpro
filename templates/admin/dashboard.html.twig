@@ -1,0 +1,89 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block admin_title %}Tableau de bord{% endblock %}
+
+{% block admin_body %}
+    <h1 class="h3 pb-2 mb-4 border-bottom">Tableau de bord</h1>
+
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-lg-3">
+            <div class="card h-100">
+                <div class="card-body">
+                    <div class="text-muted small">Clients</div>
+                    <div class="fs-3 fw-semibold">{{ stats.customerCount }}</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="card h-100">
+                <div class="card-body">
+                    <div class="text-muted small">Matériels</div>
+                    <div class="fs-3 fw-semibold">{{ stats.materialCount }}</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="card h-100">
+                <div class="card-body">
+                    <div class="text-muted small">Locations en cours</div>
+                    <div class="fs-3 fw-semibold">{{ stats.activeLocationCount }}</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="card h-100">
+                <div class="card-body">
+                    <div class="text-muted small">Chiffre d'affaires</div>
+                    <div class="fs-3 fw-semibold">{{ stats.totalRevenue|number_format(2, ',', ' ') }} €</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <a class="text-decoration-none text-reset" href="{{ path('app_admin_location_anomalies') }}">
+                <div class="card h-100{% if stats.anomalyLocationCount > 0 %} border-warning{% endif %}">
+                    <div class="card-body">
+                        <div class="text-muted small">Anomalies de locations</div>
+                        <div class="fs-3 fw-semibold{% if stats.anomalyLocationCount > 0 %} text-warning{% endif %}">{{ stats.anomalyLocationCount }}</div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-6 col-lg-3">
+            <a class="text-decoration-none text-reset" href="{{ path('app_admin_material_anomalies') }}">
+                <div class="card h-100{% if stats.anomalyMaterialCount > 0 %} border-warning{% endif %}">
+                    <div class="card-body">
+                        <div class="text-muted small">Anomalies de matériels</div>
+                        <div class="fs-3 fw-semibold{% if stats.anomalyMaterialCount > 0 %} text-warning{% endif %}">{{ stats.anomalyMaterialCount }}</div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <div class="row g-3">
+        <div class="col-lg-6">
+            <div class="card h-100">
+                <div class="card-header">Matériels par statut</div>
+                <div class="card-body">
+                    {{ render_chart(materialsChart) }}
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="card h-100">
+                <div class="card-header">Locations par statut</div>
+                <div class="card-body">
+                    {{ render_chart(locationsChart) }}
+                </div>
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">Activité des 6 derniers mois</div>
+                <div class="card-body">
+                    {{ render_chart(activityChart) }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

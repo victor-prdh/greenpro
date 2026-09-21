@@ -1,0 +1,43 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block admin_title %}Utilisateurs{% endblock %}
+
+{% block admin_body %}
+    <div class="d-flex justify-content-between align-items-center pb-2 mb-4 border-bottom">
+        <h1 class="h3 mb-0">Utilisateurs</h1>
+        <a class="btn btn-primary" href="{{ path('app_admin_user_new') }}">Nouvel utilisateur</a>
+    </div>
+
+    <table class="table table-striped align-middle">
+        <thead>
+            <tr>
+                <th>Email</th>
+                <th>Rôles</th>
+                <th>Créé le</th>
+                <th class="text-end">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in pagination %}
+                <tr>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.roles|join(', ') }}</td>
+                    <td>{{ user.createdAt ? user.createdAt|date('d/m/Y H:i') : '' }}</td>
+                    <td class="text-end">
+                        <a class="btn btn-sm btn-outline-secondary" href="{{ path('app_admin_user_show', {uuid: user.uuid}) }}">Voir</a>
+                        <a class="btn btn-sm btn-outline-secondary" href="{{ path('app_admin_user_edit', {uuid: user.uuid}) }}">Modifier</a>
+                        <form class="d-inline" method="post" action="{{ path('app_admin_user_delete', {uuid: user.uuid}) }}" onsubmit="return confirm('Supprimer cet utilisateur ?');">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete-user-' ~ user.uuid) }}">
+                            <button class="btn btn-sm btn-outline-danger" type="submit">Supprimer</button>
+                        </form>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="4" class="text-muted">Aucun utilisateur.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {{ paginator_nav(pagination) }}
+{% endblock %}

@@ -1,0 +1,78 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block admin_title %}Locations{% endblock %}
+
+{% block admin_body %}
+    <div class="d-flex justify-content-between align-items-center pb-2 mb-4 border-bottom">
+        <h1 class="h3 mb-0">Locations</h1>
+        <div>
+            <a class="btn btn-outline-warning" href="{{ path('app_admin_location_anomalies') }}">
+                <i class="bi bi-exclamation-triangle me-1"></i>
+                Anomalies
+            </a>
+            <a class="btn btn-primary" href="{{ path('app_admin_location_new') }}">Nouvelle location</a>
+        </div>
+    </div>
+
+    <form class="row g-2 align-items-end mb-3" method="get">
+        <div class="col-auto">
+            <label class="form-label" for="filter-period">P&eacute;riode</label>
+            <select class="form-select" id="filter-period" name="period" onchange="this.form.submit()">
+                <option value="current" {{ currentPeriod == 'current' ? 'selected' }}>En ce moment</option>
+                <option value="all" {{ currentPeriod == 'all' ? 'selected' }}>Toutes les p&eacute;riodes</option>
+            </select>
+        </div>
+        <div class="col-auto">
+            <label class="form-label" for="filter-status">Statut</label>
+            <select class="form-select" id="filter-status" name="status" onchange="this.form.submit()">
+                <option value="">Tous les statuts</option>
+                {% for status in statuses %}
+                    <option value="{{ status.value }}" {{ currentStatus == status ? 'selected' }}>{{ status.trans()|trans }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-auto">
+            <button class="btn btn-outline-secondary" type="submit">Filtrer</button>
+            {% if currentStatus or currentPeriod != 'current' %}
+                <a class="btn btn-outline-secondary" href="{{ path('app_admin_location_index') }}">R&eacute;initialiser</a>
+            {% endif %}
+        </div>
+    </form>
+
+    <table class="table table-striped align-middle">
+        <thead>
+            <tr>
+                <th>Client</th>
+                <th>Début</th>
+                <th>Fin</th>
+                <th>Statut</th>
+                <th>Prix total</th>
+                <th class="text-end">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for location in pagination %}
+                <tr>
+                    <td>{{ location.customer ? location.customer.companyName : '' }}</td>
+                    <td>{{ location.startAt|date('d/m/Y') }}</td>
+                    <td>{{ location.endAt|date('d/m/Y') }}</td>
+                    <td>{{ status_badge(location.status) }}</td>
+                    <td>{{ location.totalPrice|number_format(2, ',', ' ') }} €</td>
+                    <td class="text-end">
+                        <a class="btn btn-sm btn-outline-secondary" href="{{ path('app_admin_location_show', {uuid: location.uuid}) }}">Voir</a>
+                        <a class="btn btn-sm btn-outline-secondary" href="{{ path('app_admin_location_edit', {uuid: location.uuid}) }}">Modifier</a>
+                        <form class="d-inline" method="post" action="{{ path('app_admin_location_delete', {uuid: location.uuid}) }}" onsubmit="return confirm('Supprimer cette location ?');">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete-location-' ~ location.uuid) }}">
+                            <button class="btn btn-sm btn-outline-danger" type="submit">Supprimer</button>
+                        </form>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="6" class="text-muted">Aucune location.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {{ paginator_nav(pagination) }}
+{% endblock %}

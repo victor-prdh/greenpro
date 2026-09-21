@@ -5,9 +5,9 @@ services:
     restart: unless-stopped
     depends_on:
       mysql:
-        condition: service_started
+        condition: service_healthy
       redis:
-        condition: service_started
+        condition: service_healthy
       adminer:
         condition: service_started
       mailcatcher:
@@ -31,6 +31,7 @@ services:
       - MAILER_DSN=smtp://greenpro-mailcatcher:1025
     volumes:
       - .:/app
+      - /app/vendor
 
   mysql:
     hostname: greenpro-mysql
@@ -52,6 +53,7 @@ services:
       - TZ=Europe/Paris
     volumes:
       - mysql_data:/var/lib/mysql
+      - ./docker/mysql/initdb.d:/docker-entrypoint-initdb.d:ro
 
   redis:
     hostname: greenpro-redis

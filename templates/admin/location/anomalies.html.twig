@@ -1,0 +1,44 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block admin_title %}Anomalies de statut{% endblock %}
+
+{% block admin_body %}
+    <div class="d-flex justify-content-between align-items-center pb-2 mb-4 border-bottom">
+        <h1 class="h3 mb-0">Anomalies de statut</h1>
+        <a class="btn btn-outline-secondary" href="{{ path('app_admin_location_index') }}">Retour aux locations</a>
+    </div>
+
+    <table class="table table-striped align-middle">
+        <thead>
+            <tr>
+                <th>Client</th>
+                <th>Début</th>
+                <th>Fin</th>
+                <th>Statut actuel</th>
+                <th>Statut attendu</th>
+                <th class="text-end">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for location in pagination %}
+                {% set now = 'now'|date('U') %}
+                {% set expectedStatus = location.endAt|date('U') < now ? constant('App\\Entity\\Enum\\LocationStatusEnum::FINISHED') : constant('App\\Entity\\Enum\\LocationStatusEnum::IN_PROGRESS') %}
+                <tr class="table-warning">
+                    <td>{{ location.customer ? location.customer.companyName : '' }}</td>
+                    <td>{{ location.startAt|date('d/m/Y') }}</td>
+                    <td>{{ location.endAt|date('d/m/Y') }}</td>
+                    <td>{{ status_badge(location.status) }}</td>
+                    <td>{{ status_badge(expectedStatus) }}</td>
+                    <td class="text-end">
+                        <a class="btn btn-sm btn-outline-secondary" href="{{ path('app_admin_location_edit', {uuid: location.uuid}) }}">Modifier</a>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="6" class="text-muted">Aucune anomalie.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {{ paginator_nav(pagination) }}
+{% endblock %}
