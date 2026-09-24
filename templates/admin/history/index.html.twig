@@ -1,0 +1,53 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block admin_title %}Historique{% endblock %}
+
+{% block admin_body %}
+    <div class="d-flex justify-content-between align-items-center pb-2 mb-4 border-bottom">
+        <h1 class="h3 mb-0">Historique</h1>
+    </div>
+
+    <form class="row g-2 align-items-end mb-3" method="get">
+        <div class="col-auto">
+            <label class="form-label" for="filter-type">Type</label>
+            <select class="form-select" id="filter-type" name="type" onchange="this.form.submit()">
+                <option value="">Tous les types</option>
+                {% for type in types %}
+                    <option value="{{ type.value }}" {{ currentType == type ? 'selected' }}>{{ type.trans()|trans }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-auto">
+            <button class="btn btn-outline-secondary" type="submit">Filtrer</button>
+            {% if currentType %}
+                <a class="btn btn-outline-secondary" href="{{ path('app_admin_history_index') }}">R&eacute;initialiser</a>
+            {% endif %}
+        </div>
+    </form>
+
+    <table class="table table-striped align-middle">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Type</th>
+                <th>Message</th>
+                <th>Auteur</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for entry in pagination %}
+                <tr>
+                    <td>{{ entry.createdAt|date('d/m/Y H:i') }}</td>
+                    <td>{{ status_badge(entry.type) }}</td>
+                    <td>{{ entry.message }}</td>
+                    <td>{{ entry.author ? entry.author.email : 'Système' }}</td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="4" class="text-muted">Aucun événement.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {{ paginator_nav(pagination) }}
+{% endblock %}

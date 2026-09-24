@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace App\Tests\Controller\Admin;
 
 use App\DataFixtures\UserFixtures;
+use App\Entity\Enum\HistoryTypeEnum;
 use App\Repository\CustomerRepository;
+use App\Repository\HistoryRepository;
 use App\Repository\LocationRepository;
 use App\Repository\MaterialRepository;
 use App\Repository\UserRepository;
@@ -93,6 +95,40 @@ class LocationCrudControllerTest extends WebTestCase
 
         self::assertResponseRedirects('/admin/locations');
         self::assertCount(2, static::getContainer()->get(LocationRepository::class)->findAll());
+    }
+
+    public function testChangingTheStatusOnEditHistorizesIt(): void
+    {
+        $location = static::getContainer()->get(LocationRepository::class)->findAll()[0];
+
+        $this->client->loginUser($this->getUser('manager@greenpro.fr'));
+        $crawler = $this->client->request('GET', \sprintf('/admin/locations/%s/edit', $location->uuid));
+
+        $form = $crawler->selectButton('Enregistrer')->form();
+        $form['location[status]'] = 'in-progress';
+        $this->client->submit($form);
+
+        self::assertResponseRedirects('/admin/locations');
+
+        $history = static::getContainer()->get(HistoryRepository::class)->findOneBy(['type' => HistoryTypeEnum::LOCATION_STATUS_CHANGED]);
+        self::assertNotNull($history);
+        self::assertStringContainsString((string) $location->uuid, $history->message);
+    }
+
+    public function testEditingALocationWithoutChangingItsStatusDoesNotHistorizeIt(): void
+    {
+        $location = static::getContainer()->get(LocationRepository::class)->findAll()[0];
+
+        $this->client->loginUser($this->getUser('manager@greenpro.fr'));
+        $crawler = $this->client->request('GET', \sprintf('/admin/locations/%s/edit', $location->uuid));
+
+        $form = $crawler->selectButton('Enregistrer')->form();
+        $this->client->submit($form);
+
+        self::assertResponseRedirects('/admin/locations');
+
+        $history = static::getContainer()->get(HistoryRepository::class)->findOneBy(['type' => HistoryTypeEnum::LOCATION_STATUS_CHANGED]);
+        self::assertNull($history);
     }
 
     public function testAManagerCanDeleteALocation(): void

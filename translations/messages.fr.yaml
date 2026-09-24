@@ -10,3 +10,7 @@ enum:
         rented: Loué
         maintenance: En maintenance
         retired: Retiré
+    history_type:
+        login: Connexion
+        location_status_changed: Changement de statut location
+        other: Autre

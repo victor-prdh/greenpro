@@ -46,7 +46,7 @@ class LocationCrudController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/{uuid}', name: 'show', methods: ['GET'], requirements: ['uuid' => Requirement::UUID])]
+    #[Route(path: '/{uuid}', name: 'show', requirements: ['uuid' => Requirement::UUID], methods: ['GET'])]
     public function show(#[MapEntity(id: 'uuid')] Location $location): Response
     {
         return $this->render('admin/location/show.html.twig', [
@@ -75,7 +75,7 @@ class LocationCrudController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/{uuid}/edit', name: 'edit', methods: ['GET', 'POST'], requirements: ['uuid' => Requirement::UUID])]
+    #[Route(path: '/{uuid}/edit', name: 'edit', requirements: ['uuid' => Requirement::UUID], methods: ['GET', 'POST'])]
     public function edit(Request $request, #[MapEntity(id: 'uuid')] Location $location, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(LocationType::class, $location);
@@ -95,7 +95,7 @@ class LocationCrudController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/{uuid}/delete', name: 'delete', methods: ['POST'], requirements: ['uuid' => Requirement::UUID])]
+    #[Route(path: '/{uuid}/delete', name: 'delete', requirements: ['uuid' => Requirement::UUID], methods: ['POST'])]
     public function delete(Request $request, #[MapEntity(id: 'uuid')] Location $location, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete-location-'.$location->uuid, $request->request->getString('_token'))) {

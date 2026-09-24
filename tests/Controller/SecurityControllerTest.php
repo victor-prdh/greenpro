@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Tests\Controller;
 
 use App\DataFixtures\UserFixtures;
+use App\Entity\Enum\HistoryTypeEnum;
+use App\Repository\HistoryRepository;
 use App\Repository\UserRepository;
 use App\Tests\Support\FixturesTrait;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
@@ -61,6 +63,12 @@ class SecurityControllerTest extends WebTestCase
 
         self::assertResponseIsSuccessful();
         self::assertSelectorTextContains('h1', 'Tableau de bord');
+
+        $history = static::getContainer()->get(HistoryRepository::class)
+            ->findOneBy(['message' => 'Connexion de admin@greenpro.fr']);
+        self::assertNotNull($history);
+        self::assertSame(HistoryTypeEnum::LOGIN, $history->type);
+        self::assertSame('admin@greenpro.fr', $history->author?->email);
     }
 
     public function testAnAlreadyAuthenticatedUserIsRedirectedAwayFromTheLoginPage(): void

@@ -11,4 +11,5 @@ enum TableEnum: string
     case LOCATION = 'location';
     case MATERIAL = 'material';
     case LOCATION_MATERIAL = 'location_material';
+    case HISTORY = 'history';
 }
